@@ -1,0 +1,22 @@
+first <- tempfile()
+download.file("http://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip",first)
+hpower.txt <- unzip(first)
+hhpower <- read.table(hpower.txt, sep =";")
+hhpowerncl <- hhpower[c(2:2075260), ]
+colnames(hhpowerncl) <- c("Date", "Time", "Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity",  "Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
+hpowers <- hhpowerncl
+hpowers$Global_active_power <- as.numeric(as.character(hpowers$Global_active_power))
+hpowers$Global_intensity <- as.numeric((as.character(hpowers$Global_intensity)))
+hpowers$Voltage <- as.numeric((as.character(hpowers$Voltage)))
+hpowers$Sub_metering_1 <- as.numeric(as.character(hpowers$Sub_metering_1))
+hpowers$Sub_metering_2 <- as.numeric(as.character(hpowers$Sub_metering_2))
+hpowers$Sub_metering_3 <- as.numeric(as.character(hpowers$Sub_metering_3))
+hpowerf <- subset(hpowers, Date %in% c ("2/2/2007", "1/2/2007"))
+hpowerf$Date <- (as.character(hpowerf$Date))
+hpowerf$Date <- as.Date(hpowerf$Date, format = "%d/%m/%Y")
+hpowerf$datetime <- paste(hpowerf$Date, hpowerf$Time)
+hpowerf$DT <- strptime(hpowerf$datetime, format = "%Y-%m-%d %H:%M:%S")
+
+png('plot2.png')
+plot(hpowerf$DT, hpowerf$Global_active_power, type = "l", xlab = " ", ylab = "Global Active Power (kilowatts)")
+dev.off()
